@@ -13,6 +13,11 @@ pipeline {
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
         }
         stage('Test') {
             steps {
@@ -21,6 +26,7 @@ pipeline {
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
+                    archiveArtifacts artifacts: 'target/surefire-reports/TEST-com.mycompany.app.AppTest.xml', fingerprint: true
                 }
             }
         }
@@ -29,5 +35,5 @@ pipeline {
                 sh './jenkins/scripts/deliver.sh' 
             }
         }
-    }
+    } 
 }
